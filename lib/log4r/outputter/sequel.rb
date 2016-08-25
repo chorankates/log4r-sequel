@@ -3,6 +3,7 @@ require 'log4r/yamlconfigurator'
 require 'sequel'
 require 'yaml'
 
+# TODO  should we move this to ../logger.rb
 class Log4r::Logger
   # +method+ String or Symbol representing the name of the method in the Log4r::Outputter::SequelOutputter class you want to use
   # +parameters+ arbitrary data type to be passed to :methods
@@ -45,6 +46,7 @@ class SequelOutputter < Log4r::Outputter
       config = config[YAML_KEY]
     else
       # TODO raise an error
+      # TODO add an option that allows a DBH to be passed directly, but that still gives the map we need to initialize the db
     end
 
     # convert all keys to symbols
@@ -67,7 +69,13 @@ class SequelOutputter < Log4r::Outputter
     raise Log4r::ConfigError.new("required 'delimiter' key missing from configuration") if @delimiter.nil?
 
     if @type.eql?(:postgres)
-      # TODO implement this
+      @database = config[:database]
+      @file     = nil
+      server    = config[:server]
+      port      = config[:port]
+      username  = config[:username]
+      password  = config[:password]
+      @dbh = Sequel.connect(sprintf('postgres://%s:%s@%s:%s/%s', username, password, server, port, @database))
       p 'DBGZ' if nil?
     elsif @type.eql?(:sqlite)
       @database = nil # sqlite has one DB per file
@@ -76,6 +84,8 @@ class SequelOutputter < Log4r::Outputter
     else
       raise Log4r::ConfigError.new(sprintf('unable to use type[%s], allowed[%s]', @type, KNOWN_TYPES))
     end
+
+    @dbh
   end
 
   # +dbh+ a Sequel::Database handle
