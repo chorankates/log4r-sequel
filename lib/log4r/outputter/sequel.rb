@@ -3,6 +3,18 @@ require 'log4r/yamlconfigurator'
 require 'sequel'
 require 'yaml'
 
+class Log4r::Logger
+  # +method+ String or Symbol representing the name of the method in the Log4r::Outputter::SequelOutputter class you want to use
+  # +parameters+ arbitrary data type to be passed to :methods
+  def sequel(method, parameters)
+    # TODO support methods that take more than one parameter
+    self.outputters.each do |op|
+      next unless op.is_a?(SequelOutputter)
+      return op.send(method.to_sym, parameters)
+    end
+  end
+end
+
 class SequelOutputter < Log4r::Outputter
 
   KNOWN_TYPES = [
@@ -10,40 +22,69 @@ class SequelOutputter < Log4r::Outputter
     :sqlite,
   ]
 
-  attr_reader :database, :dbh, :delimiter, :file, :map, :table, :type
+  YAML_KEY = 'log4r_sequel_config'
+
+  attr_reader :database, :delimiter, :file, :map, :table, :type
+  attr_accessor :dbh
 
   def initialize(name, hash)
     super(name, hash) # make us a real Log4r::Outputter object
   end
 
-  # +file+ YAML file containing a 'log4r_sequel_config' Hash
-  # TODO support passing the Hash directly
-  def connect(file)
-    config = YAML.load_file(file)['log4r_sequel_config']
+  # +input+ Hash of configuration options or a YAML file that contains a 'log4r_sequel_config' Hash containing configuration options
+  def configure(input)
+    config = nil
 
-    # get a Sequel database handle
-    @type = config[:type.to_s]
+    if input.is_a?(Hash)
+      config = input
+    elsif input.is_a?(String)
+      raise Log4r::ConfigError.new(sprintf('file[%s] not readable', input)) unless File.readable?(input)
+      config = YAML.load_file(input)
+
+      raise Log4r::ConfigError.new(sprintf("file[%s] did not contain required '%s' hash", input, YAML_KEY)) unless config.has_key?(YAML_KEY)
+      config = config[YAML_KEY]
+    else
+      # TODO raise an error
+    end
+
+    # convert all keys to symbols
+    new_config = Hash.new
+    config.keys.each do |key|
+      new_config[key.to_sym] = config[key]
+    end
+    config = new_config
+
+    @type = config[:type]
+
+    # error checking on table/column settings
+    @table = config[:table].to_sym
+    raise Log4r::ConfigError.new("required 'table' key missing from configuration") if @table.nil?
+
+    @map = config[:map]
+    raise Log4r::ConfigError.new("required 'map' key missing from configuration") if @map.nil?
+
+    @delimiter = config[:delimiter]
+    raise Log4r::ConfigError.new("required 'delimiter' key missing from configuration") if @delimiter.nil?
 
     if @type.eql?(:postgres)
       # TODO implement this
       p 'DBGZ' if nil?
     elsif @type.eql?(:sqlite)
       @database = nil # sqlite has one DB per file
-      @file = config[:file.to_s]
+      @file = config[:file]
       @dbh = Sequel.connect(sprintf('sqlite://%s', @file))
     else
       raise Log4r::ConfigError.new(sprintf('unable to use type[%s], allowed[%s]', @type, KNOWN_TYPES))
     end
+  end
 
-    # error checking on table/column settings
-    @table = config[:table.to_s].to_sym
-    raise Log4r::ConfigError.new("required 'table' key missing from configuration") if @table.nil?
+  # +dbh+ a Sequel::Database handle
+  def connect(dbh)
+    unless dbh.is_a?(Sequel::Database)
+      # TODO raise an error
+    end
 
-    @map = config[:map.to_s]
-    raise Log4r::ConfigError.new("required 'map' key missing from configuration") if @map.nil?
-
-    @delimiter = config[:delimiter.to_s]
-    raise Log4r::ConfigError.new("required 'delimiter' key missing from configuration") if @delimiter.nil?
+    @dbh = dbh
 
     # idempotently create table/columns
     initialize_db
