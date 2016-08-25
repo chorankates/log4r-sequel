@@ -1,0 +1,7 @@
+# development files
+.idea/*
+*.iml
+.rakeTasks
+
+# generated files
+pkg/*
