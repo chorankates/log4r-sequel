@@ -12,13 +12,13 @@ gem 'rack', '= 1.6.4'
 gem 'sequel', '~> 4.6', '>= 4.6.0'
 
 group :development do
-  gem 'jeweler', '~> 2.0.0'
+  gem 'jeweler', '~> 2.0', '>= 2.0.0'
 end
 
 group :sqlite do
-  gem 'sqlite3', '~> 1.3.11'
+  gem 'sqlite3', '~> 1.3', '>= 1.3.11'
 end
 
 group :postgres do
-  gem 'pg', '~> 0.18.4'
+  gem 'pg', '~> 0.18', '>= 0.18.4'
 end
