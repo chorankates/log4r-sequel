@@ -30,24 +30,13 @@ class SequelOutputter < Log4r::Outputter
 
   def initialize(name, hash)
     super(name, hash) # make us a real Log4r::Outputter object
+    dbh = configure(hash) # validate settings passed
+    connect(dbh) # actually connect to the DBH
   end
 
-  # +input+ Hash of configuration options or a YAML file that contains a 'log4r_sequel_config' Hash containing configuration options
+  # +input+ Hash of configuration options
   def configure(input)
-    config = nil
-
-    if input.is_a?(Hash)
-      config = input
-    elsif input.is_a?(String)
-      raise Log4r::ConfigError.new(sprintf('file[%s] not readable', input)) unless File.readable?(input)
-      config = YAML.load_file(input)
-
-      raise Log4r::ConfigError.new(sprintf("file[%s] did not contain required '%s' hash", input, YAML_KEY)) unless config.has_key?(YAML_KEY)
-      config = config[YAML_KEY]
-    else
-      # TODO raise an error
-      # TODO add an option that allows a DBH to be passed directly, but that still gives the map we need to initialize the db
-    end
+    config = input
 
     # convert all keys to symbols
     new_config = Hash.new
@@ -76,7 +65,6 @@ class SequelOutputter < Log4r::Outputter
       username  = config[:username]
       password  = config[:password]
       @dbh = Sequel.connect(sprintf('postgres://%s:%s@%s:%s/%s', username, password, server, port, @database))
-      p 'DBGZ' if nil?
     elsif @type.eql?(:sqlite)
       @database = nil # sqlite has one DB per file
       @file = config[:file]
@@ -90,16 +78,12 @@ class SequelOutputter < Log4r::Outputter
 
   # +dbh+ a Sequel::Database handle
   def connect(dbh)
-    unless dbh.is_a?(Sequel::Database)
-      # TODO raise an error
-    end
+    raise StandardError.new(sprintf('invalid parameter class[%s] expecting[Sequel::Database]', dbh.class)) unless dbh.is_a?(Sequel::Database)
 
     @dbh = dbh
 
     # idempotently create table/columns
     initialize_db
-
-    p 'DBGZ' if nil?
   end
 
   def connected?

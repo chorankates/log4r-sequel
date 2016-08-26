@@ -10,7 +10,7 @@ file = sprintf('%s/log4r-sqlite.yaml', File.dirname(__FILE__))
 Log4r::YamlConfigurator.load_yaml_file(file)
 
 logger  = Log4r::Logger.get('foo')
-logger2 = Log4r::Logger.get('foo')
+logger2 = Log4r::Logger.new('foo')
 # these must be run before using the logger
 dbh = logger.sequel(:configure, file)
 logger.sequel(:connect, dbh)
