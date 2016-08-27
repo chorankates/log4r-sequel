@@ -1,8 +1,9 @@
 require 'jeweler'
 require 'rake'
 require 'rake/clean'
+require 'rake/testtask'
 
-CLEAN.include('example/*.sqlite')
+CLEAN.include('**/*.sqlite')
 CLEAN.include('pkg/*')
 
 Jeweler::Tasks.new do |gem|
@@ -15,3 +16,14 @@ Jeweler::Tasks.new do |gem|
   gem.licenses    =  'MIT'
 end
 Jeweler::RubygemsDotOrgTasks.new
+
+namespace :test do
+
+  Rake::TestTask.new do |t|
+    t.name = 'functional'
+    t.libs << 'lib'
+    t.test_files = FileList['test/functional/**/test_*.rb']
+    t.verbose = true
+  end
+
+end

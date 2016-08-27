@@ -6,4 +6,4 @@
 # generated files
 pkg/*
 example/*.sqlite
-
+*.sqlite
