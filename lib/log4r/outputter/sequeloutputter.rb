@@ -15,6 +15,16 @@ class Log4r::Logger
       return op.send(method.to_sym, parameters)
     end
   end
+
+  # no parameters, returns the first Log4r::Outputter::Sequel object
+  # TODO is there ever a case where there would be more than one?
+  def get_outputter
+    self.outputters.each do |op|
+      next unless op.is_a?(SequelOutputter)
+      return op
+    end
+  end
+
 end
 
 class SequelOutputter < Log4r::Outputter

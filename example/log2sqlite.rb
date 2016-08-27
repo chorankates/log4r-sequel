@@ -3,7 +3,7 @@ $LOAD_PATH << sprintf('%s/../lib', File.dirname(__FILE__))
 require 'sqlite3'
 
 #require 'log4r-sequel'
-require 'log4r/outputter/sequel'
+require 'log4r/outputter/sequeloutputter'
 require 'log4r/yamlconfigurator'
 
 ## instantiate a logger following the log4r pattern
