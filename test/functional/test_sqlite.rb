@@ -8,6 +8,7 @@ class TestSqlite < Test::Unit::TestCase
 
   def setup
     @good_config = sprintf('%s/../log4r-sqlite_test.yaml', File.expand_path(File.dirname(__FILE__)))
+    @table = :logs
   end
 
   def teardown
@@ -26,8 +27,7 @@ class TestSqlite < Test::Unit::TestCase
     end
 
     assert_not_nil(logger)
-
-    # TODO do some row count checks
+    assert_equal(0, logger.get_outputter.dbh[@table].count)
 
     assert_nothing_raised do
       logger.debug('this is a debug message')
@@ -37,8 +37,12 @@ class TestSqlite < Test::Unit::TestCase
       logger.fatal('this is a fatal')
     end
 
-    # TODO do some row count checks
+    assert_not_equal(0, logger.get_outputter.dbh[@table].count)
 
+  end
+
+  def test_sad_config
+    # TODO pass in bad configs as hashes
   end
 
 

@@ -8,7 +8,7 @@ require 'yaml'
 class Log4r::Logger
   # +method+ String or Symbol representing the name of the method in the Log4r::Outputter::SequelOutputter class you want to use
   # +parameters+ arbitrary data type to be passed to :methods
-  def sequel(method, parameters)
+  def sequel(method, parameters = { })
     # TODO support methods that take more than one parameter
     self.outputters.each do |op|
       next unless op.is_a?(SequelOutputter)
