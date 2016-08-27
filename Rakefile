@@ -23,7 +23,9 @@ namespace :test do
     t.name = 'functional'
     t.libs << 'lib'
     t.test_files = FileList['test/functional/**/test_*.rb']
-    t.verbose = true
+    #t.verbose = true
   end
 
 end
+desc 'run all tests'
+task :test => ['clean', 'test:functional'] do; end
