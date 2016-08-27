@@ -12,6 +12,9 @@ gem 'rack', '= 1.6.4'
 
 gem 'sequel', '~> 4.6', '>= 4.6.0'
 
+# making ruby 2.3.0 happy
+gem 'hoe', '~> 3.15', '>= 3.15.1'
+
 group :development do
   gem 'jeweler', '~> 2.0', '>= 2.0.0'
   gem 'test-unit', '~> 2.0', '>= 2.0.0'
