@@ -14,6 +14,9 @@ Jeweler::Tasks.new do |gem|
   gem.homepage    = 'http://github.com/chorankates/log4r-sequel'
   gem.authors     = ['Conor Horan-Kates']
   gem.licenses    =  'MIT'
+
+  gem.files.exclude 'examples/*'
+  gem.files.exclude 'pkg/*'
 end
 Jeweler::RubygemsDotOrgTasks.new
 
