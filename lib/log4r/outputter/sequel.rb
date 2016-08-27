@@ -4,6 +4,7 @@ require 'sequel'
 require 'yaml'
 
 # TODO  should we move this to ../logger.rb
+# TODO .. or should we remove this entirely? it was implemented to let us call connect/configure, but since we do that in initiliaze now, maybe we just pull it
 class Log4r::Logger
   # +method+ String or Symbol representing the name of the method in the Log4r::Outputter::SequelOutputter class you want to use
   # +parameters+ arbitrary data type to be passed to :methods
@@ -18,14 +19,12 @@ end
 
 class SequelOutputter < Log4r::Outputter
 
-  KNOWN_TYPES = [
+  KNOWN_ENGINES = [
     :postgres,
     :sqlite,
   ]
 
-  YAML_KEY = 'log4r_sequel_config'
-
-  attr_reader :database, :delimiter, :file, :map, :table, :type
+  attr_reader :database, :delimiter, :engine, :file, :map, :table
   attr_accessor :dbh
 
   def initialize(name, hash)
@@ -45,19 +44,17 @@ class SequelOutputter < Log4r::Outputter
     end
     config = new_config
 
-    @type = config[:type]
+    @engine = config[:engine].to_sym
 
     # error checking on table/column settings
     @table = config[:table].to_sym
-    raise Log4r::ConfigError.new("required 'table' key missing from configuration") if @table.nil?
-
     @map = config[:map]
-    raise Log4r::ConfigError.new("required 'map' key missing from configuration") if @map.nil?
-
     @delimiter = config[:delimiter]
-    raise Log4r::ConfigError.new("required 'delimiter' key missing from configuration") if @delimiter.nil?
+    [@delimiter, @map, @table].each do |required|
+      raise Log4r::ConfigError.new(sprintf("required '%s' key missing from configuration", required)) if required.nil?
+    end
 
-    if @type.eql?(:postgres)
+    if @engine.eql?(:postgres)
       @database = config[:database]
       @file     = nil
       server    = config[:server]
@@ -65,18 +62,19 @@ class SequelOutputter < Log4r::Outputter
       username  = config[:username]
       password  = config[:password]
       @dbh = Sequel.connect(sprintf('postgres://%s:%s@%s:%s/%s', username, password, server, port, @database))
-    elsif @type.eql?(:sqlite)
+    elsif @engine.eql?(:sqlite)
       @database = nil # sqlite has one DB per file
       @file = config[:file]
       @dbh = Sequel.connect(sprintf('sqlite://%s', @file))
     else
-      raise Log4r::ConfigError.new(sprintf('unable to use type[%s], allowed[%s]', @type, KNOWN_TYPES))
+      raise Log4r::ConfigError.new(sprintf('unable to use engine[%s], allowed[%s]', @engine, KNOWN_ENGINES))
     end
 
     @dbh
   end
 
   # +dbh+ a Sequel::Database handle
+  ## while not really supported, if you take care of the database/table creation, you could hack it in here by <your_logger>.outputters[<sequel outputter>].connect(<dbh>)
   def connect(dbh)
     raise StandardError.new(sprintf('invalid parameter class[%s] expecting[Sequel::Database]', dbh.class)) unless dbh.is_a?(Sequel::Database)
 
