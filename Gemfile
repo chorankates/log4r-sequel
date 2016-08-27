@@ -1,4 +1,5 @@
-ruby '2.0.0'
+## travis really doesn't like this
+#ruby '2.0.0'
 
 source 'https://rubygems.org'
 
