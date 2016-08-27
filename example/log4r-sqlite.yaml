@@ -15,12 +15,23 @@ log4r_config:
       pattern: '%d | %C | %l | %m'
 
   - type: SequelOutputter
+    # traditional Log4r settings
     name: sequel
     level: DEBUG
     formatter:
       type: PatternFormatter
       date_pattern: '%Y/%m/%d %H:%M.%s'
       pattern: '%d!@#$%C!@#$%l!@#$%m' # date|level|event/class fullname|message
+    # log4r-sequel settings
+    engine: sqlite
+    file: log.sqlite
+    table: logs
+    delimiter: '!@#$' # this is used to determine columns needed based on log4 configuration
+    map:
+      0: 'date'
+      1: 'level'
+      2: 'class'
+      3: 'message'
 
 # truncated map from http://log4r.rubyforge.org/rdoc/Log4r/PatternFormatter.html
 #  %c - event short name
@@ -33,14 +44,3 @@ log4r_config:
 #  %p - process ID aka PID
 #  %M - formatted message
 #  %l - Level in string form
-
-log4r_sequel_config:
-  type: :sqlite
-  file: log.sqlite
-  table: logs
-  delimiter: '!@#$' # this is used to determine columns needed based on log4 configuration
-  map:
-    0: 'date'
-    1: 'level'
-    2: 'class'
-    3: 'message'
