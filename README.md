@@ -1,13 +1,12 @@
 # log4r-sequel
 Log4r outputter to a Sequel database handle
 
-- [log4r-sequel](#log4r-sequel)
-	- [usage](#usage)
-		- [pre-built gem installation (stable)](#pre-built-gem-installation-stable)
-		- [from-source installation (latest)](#from-source-installation-latest)
-		- [demo](#demo)
-	- [supported databases](#supported-databases)
-	- [TODO](#todo)
+- [usage](#usage)
+  - [pre-built gem installation (stable)](#pre-built-gem-installation-stable)
+  - [from-source installation (latest)](#from-source-installation-latest)
+  - [demo](#demo)
+- [supported databases](#supported-databases)
+- [TODO](#todo)
 
 the de-facto standard library for logging in Ruby, [log4r](https://github.com/colbygk/log4r) works very well for a wide array of logging targets:
   * STDOUT / STDERR
