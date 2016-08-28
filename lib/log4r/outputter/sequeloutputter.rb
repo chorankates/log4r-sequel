@@ -104,7 +104,7 @@ class SequelOutputter < Log4r::Outputter
   def write(data)
     raise StandardError.new(sprintf('%s is not connected, run %s.connect(yaml_file)', self.class, self.class)) unless connected?
      # INSERT INTO `logs`(`id`,`date`,`level`,`class`,`message`) VALUES (1,NULL,NULL,NULL,NULL);
-    tokens = data.split(@delimiter)
+    tokens = data.chomp.split(@delimiter)
     hash = Hash.new
 
     tokens.each_with_index do |token, i|

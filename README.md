@@ -56,15 +56,10 @@ SQLite version 3.8.10.2 2015-05-20 18:17:19
 Enter ".help" for usage hints.
 sqlite> select * from logs;
 1|2016/08/27 17:10.1472343022|foo|DEBUG|this is a debug message
-
 2|2016/08/27 17:10.1472343022|foo|INFO|this is an info message
-
 3|2016/08/27 17:10.1472343022|foo|WARN|this is a warning
-
 4|2016/08/27 17:10.1472343022|foo|ERROR|this is an error
-
 5|2016/08/27 17:10.1472343022|foo|FATAL|this is a fatal
-
 sqlite>
 ```
 
