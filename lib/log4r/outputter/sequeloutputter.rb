@@ -3,21 +3,9 @@ require 'log4r/yamlconfigurator'
 require 'sequel'
 require 'yaml'
 
-# TODO  should we move this to ../logger.rb
-# TODO .. or should we remove this entirely? it was implemented to let us call connect/configure, but since we do that in initiliaze now, maybe we just pull it
 class Log4r::Logger
-  # +method+ String or Symbol representing the name of the method in the Log4r::Outputter::SequelOutputter class you want to use
-  # +parameters+ arbitrary data type to be passed to :methods
-  def sequel(method, parameters = { })
-    # TODO support methods that take more than one parameter
-    self.outputters.each do |op|
-      next unless op.is_a?(SequelOutputter)
-      return op.send(method.to_sym, parameters)
-    end
-  end
 
   # no parameters, returns the first Log4r::Outputter::Sequel object
-  # TODO is there ever a case where there would be more than one?
   def get_outputter
     self.outputters.each do |op|
       next unless op.is_a?(SequelOutputter)
@@ -67,7 +55,7 @@ class SequelOutputter < Log4r::Outputter
 
     if @engine.eql?(:postgres)
       @database = config[:database]
-      @file     = nil
+      @file     = config[:table].to_sym # this is technically the.. table, but maintaining interface cleanliness
       server    = config[:server]
       port      = config[:port]
       username  = config[:username]
