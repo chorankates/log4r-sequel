@@ -1,7 +1,6 @@
 $LOAD_PATH << sprintf('%s/../../lib', File.dirname(__FILE__))
 require 'log4r/outputter/sequeloutputter'
 
-
 require 'test/unit'
 
 class TestSqlite < Test::Unit::TestCase
@@ -9,6 +8,12 @@ class TestSqlite < Test::Unit::TestCase
   def setup
     @good_config = sprintf('%s/../log4r-sqlite_test.yaml', File.expand_path(File.dirname(__FILE__)))
     @table = :logs
+
+    begin
+      require 'sqlite3'
+    rescue LoadError
+      omit('sqlite3 not installed/configured')
+    end
   end
 
   def teardown
