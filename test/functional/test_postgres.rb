@@ -3,23 +3,22 @@ require 'log4r/outputter/sequeloutputter'
 
 require 'test/unit'
 
-class TestSqlite < Test::Unit::TestCase
+class TestPostgres < Test::Unit::TestCase
 
   def setup
-    @good_config = sprintf('%s/../log4r-sqlite_test.yaml', File.expand_path(File.dirname(__FILE__)))
+    @good_config = sprintf('%s/../log4r-postgres_test.yaml', File.expand_path(File.dirname(__FILE__)))
     @table = :logs
 
     begin
-      require 'sqlite3'
+      require 'pg'
     rescue LoadError
-      omit('[sqlite3] not installed/configured')
+      omit('[pg] not installed/configured')
     end
+
+
   end
 
-  def teardown
-    # TODO remove the database.. assume it's just '*.sqlite' in this path?
-  end
-
+  def teardown; end
 
   def test_happy_yaml
     file = @good_config
@@ -55,10 +54,10 @@ class TestSqlite < Test::Unit::TestCase
 
     assert_nothing_raised do
       #logger = Logger::Log4r.new()
+      p 'DBGZ' if nil?
     end
 
     #assert_equal(0, logger.get_outputter.dbh[@table].count)
-
 
   end
 

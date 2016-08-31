@@ -21,15 +21,22 @@ log4r_config:
     formatter:
       type: PatternFormatter
       date_pattern: '%Y/%m/%d %H:%M.%s'
-      pattern: '%d!@#$%C!@#$%l!@#$%m'
+      pattern: '%d!@#$%l!@#$%C!@#$%c!@#$%h!@#$%p!@#$%m'
 
     # log4r-sequel settings
-    engine: sqlite
-    file: log.sqlite
+    engine: postgres
+    server: localhost
+    port: 5432
+    database: logs
     table: logs
+    username: postgres
+    password: postgres
     delimiter: '!@#$'
     map:
       0: 'date'
       1: 'level'
       2: 'class'
-      3: 'message'
+      3: 'relative_class'
+      4: 'thread'
+      5: 'pid'
+      6: 'message'
