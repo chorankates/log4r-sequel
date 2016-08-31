@@ -1,7 +1,7 @@
 $LOAD_PATH << sprintf('%s/../lib', File.dirname(__FILE__))
-
-#require 'log4r-sequel'
 require 'log4r/outputter/sequeloutputter'
+
+require 'pg'
 
 file = sprintf('%s/log4r-postgres.yaml', File.dirname(__FILE__))
 Log4r::YamlConfigurator.load_yaml_file(file)
