@@ -57,11 +57,12 @@ class SequelOutputter < Log4r::Outputter
     @engine = config[:engine].to_sym
 
     # error checking on table/column settings
-    @table = config[:table].to_sym
-    @map = config[:map]
+    @table     = config[:table].to_sym
+    @map       = config[:map]
     @delimiter = config[:delimiter]
+
     [@delimiter, @map, @table].each do |required|
-      raise Log4r::ConfigError.new(sprintf("required '%s' key missing from configuration", required)) if required.nil?
+      raise Log4r::ConfigError.new(sprintf('required key[%s] missing from configuration', required)) if required.nil?
     end
 
     if @engine.eql?(:postgres)
@@ -103,9 +104,8 @@ class SequelOutputter < Log4r::Outputter
 
   def write(data)
     raise StandardError.new(sprintf('%s is not connected, run %s.connect(yaml_file)', self.class, self.class)) unless connected?
-     # INSERT INTO `logs`(`id`,`date`,`level`,`class`,`message`) VALUES (1,NULL,NULL,NULL,NULL);
     tokens = data.chomp.split(@delimiter)
-    hash = Hash.new
+    hash   = Hash.new
 
     tokens.each_with_index do |token, i|
       hash[@map[i].to_sym] = token
