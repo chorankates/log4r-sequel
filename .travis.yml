@@ -9,5 +9,11 @@ rvm:
 notifications:
   email: false
 
+services:
+  - postgresql
+
+before_script:
+  - psql -c 'create database logs;' -U postgres
+
 bundler_args: --without test --jobs 3 --retry 3
 script: bundle exec rake test
