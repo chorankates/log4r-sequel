@@ -49,8 +49,12 @@ class SequelOutputter < Log4r::Outputter
     @map       = config[:map]
     @delimiter = config[:delimiter]
 
-    [@delimiter, @map, @table].each do |required|
-      raise Log4r::ConfigError.new(sprintf('required key[%s] missing from configuration', required)) if required.nil?
+    {
+      :delimiter => @delimiter,
+      :map       => @map,
+      :table     => @table,
+    }.each_pair do |key, value|
+      raise Log4r::ConfigError.new(sprintf('required key[%s] missing from configuration', key)) if value.nil?
     end
 
     if @engine.eql?(:postgres)
