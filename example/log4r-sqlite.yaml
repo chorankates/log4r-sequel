@@ -24,7 +24,7 @@ log4r_config:
       pattern: '%d!@#$%C!@#$%l!@#$%m' # date|level|event/class fullname|message
     # log4r-sequel settings
     engine: sqlite
-    file: log.sqlite
+    file: log-%Y-%m-%d-%H-%M-%s.sqlite
     table: logs
     delimiter: '!@#$' # this is used to determine columns needed based on log4 configuration
     map:

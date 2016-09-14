@@ -80,3 +80,4 @@ sqlite>
 
 ## notes
   * `:database`, `:table`, and `:file` options are passed through `Time.now.strftime(%s)`
+  * sqlite filenames cannot contain underscores (`the scheme sqlite does not accept registry part`)

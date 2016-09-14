@@ -15,7 +15,6 @@ class TestPostgres < Test::Unit::TestCase
       omit('[pg] not installed/configured')
     end
 
-
   end
 
   def teardown; end
