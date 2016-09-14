@@ -74,6 +74,9 @@ sqlite>
   * Postgres
 
 ## TODO
-  * allow database name to be semi-dynamically generated - via YAML config, not just by passing the hash directly
   * tests
     * unit tests
+
+
+## notes
+  * `:database`, `:table`, and `:file` options are passed through `Time.now.strftime(%s)`

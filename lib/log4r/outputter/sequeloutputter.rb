@@ -45,7 +45,7 @@ class SequelOutputter < Log4r::Outputter
     @engine = config[:engine].to_sym
 
     # error checking on table/column settings
-    @table     = config[:table].to_sym
+    @table     = Time.now.strftime(config[:table].to_sym)
     @map       = config[:map]
     @delimiter = config[:delimiter]
 
@@ -58,8 +58,8 @@ class SequelOutputter < Log4r::Outputter
     end
 
     if @engine.eql?(:postgres)
-      @database = config[:database]
-      @file     = config[:table].to_sym # this is technically the.. table, but maintaining interface cleanliness
+      @database = Time.now.strftime(config[:database])
+      @file     = @table # this is technically the.. table, but maintaining interface cleanliness
       server    = config[:server]
       port      = config[:port]
       username  = config[:username]
@@ -67,7 +67,7 @@ class SequelOutputter < Log4r::Outputter
       @dbh = Sequel.connect(sprintf('postgres://%s:%s@%s:%s/%s', username, password, server, port, @database))
     elsif @engine.eql?(:sqlite)
       @database = nil # sqlite has one DB per file
-      @file = config[:file]
+      @file = Time.now.strftime(config[:file])
       @dbh = Sequel.connect(sprintf('sqlite://%s', @file))
     else
       raise Log4r::ConfigError.new(sprintf('unable to use engine[%s], allowed[%s]', @engine, KNOWN_ENGINES))
@@ -83,7 +83,7 @@ class SequelOutputter < Log4r::Outputter
 
     @dbh = dbh
 
-    # idempotently create table/columns
+    # idempotently create database/table
     initialize_db
   end
 
