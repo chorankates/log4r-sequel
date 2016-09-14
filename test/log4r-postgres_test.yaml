@@ -28,7 +28,7 @@ log4r_config:
     server: localhost
     port: 5432
     database: logs
-    table: logs-%Y/%m/%d-%H:%M.%s
+    table: logs-%Y/%m/%d-%H:%M
     username: postgres
     password: postgres
     delimiter: '!@#$'

@@ -7,7 +7,7 @@ class TestPostgres < Test::Unit::TestCase
 
   def setup
     @good_config = sprintf('%s/../log4r-postgres_test.yaml', File.expand_path(File.dirname(__FILE__)))
-    @table = :logs
+    @table = Time.now.strftime('logs-%Y/%m/%d-%H:%M').to_sym
 
     begin
       require 'pg'

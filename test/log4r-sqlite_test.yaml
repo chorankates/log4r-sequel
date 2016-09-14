@@ -25,7 +25,7 @@ log4r_config:
 
     # log4r-sequel settings
     engine: sqlite
-    file: log-%Y-%m-%d-%H-%M-%s.sqlite # underscores are apparently 'invalid'
+    file: log-%Y-%m-%d-%H-%M.sqlite # underscores are apparently 'invalid'
     table: logs
     delimiter: '!@#$'
     map:
