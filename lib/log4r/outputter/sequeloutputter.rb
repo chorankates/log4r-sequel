@@ -45,7 +45,7 @@ class SequelOutputter < Log4r::Outputter
     @engine = config[:engine].to_sym
 
     # error checking on table/column settings
-    @table     = Time.now.strftime(config[:table].to_sym)
+    @table     = Time.now.strftime(config[:table]).to_sym
     @map       = config[:map]
     @delimiter = config[:delimiter]
 
