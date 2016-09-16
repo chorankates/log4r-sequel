@@ -2,11 +2,11 @@ $LOAD_PATH << sprintf('%s/../', File.dirname(__FILE__))
 
 require 'helper'
 
-class TestSqliteUnit < Test::Unit::TestCase
+class TestPostgresUnit < Test::Unit::TestCase
 
   def setup
     # TODO should this be a constant?
-    @good_config     = File.expand_path(sprintf('%s/../config/log4r-sqlite.yaml', File.dirname(__FILE__)))
+    @good_config     = File.expand_path(sprintf('%s/../config/log4r-postgres.yaml', File.dirname(__FILE__)))
     @good_loggername = :test.to_s
     @table           = :logs
 
@@ -18,7 +18,7 @@ class TestSqliteUnit < Test::Unit::TestCase
   end
 
   def teardown
-    # TODO remove the database.. assume it's just '*.sqlite' in this path?
+    # TODO decide what we're doing here
   end
 
   def test_happy_yaml
@@ -40,16 +40,16 @@ class TestSqliteUnit < Test::Unit::TestCase
 
     # delete vital keys here and create an array of sad yamls, but cheating a little to find our config
     fail(sprintf('invalid input to generate sad yaml[%s]', good_yaml)) unless good_yaml.has_key?('log4r_config') and
-      good_yaml['log4r_config'].has_key?('outputters') and
-      good_yaml['log4r_config']['outputters'].last['type'].eql?('SequelOutputter')
+        good_yaml['log4r_config'].has_key?('outputters') and
+        good_yaml['log4r_config']['outputters'].last['type'].eql?('SequelOutputter')
 
     {
-      :formatter.to_s => Hash.new.class,
-      :map.to_s       => Hash.new.class,
+        :formatter.to_s => Hash.new.class,
+        :map.to_s       => Hash.new.class,
 
-      :delimiter.to_s => String.new.class,
-      :engine.to_s    => String.new.class,
-      :table.to_s     => String.new.class,
+        :delimiter.to_s => String.new.class,
+        :engine.to_s    => String.new.class,
+        :table.to_s     => String.new.class,
     }.each_pair do |key, _klass|
       candidate = Marshal.load(Marshal.dump(good_yaml))
       candidate['log4r_config']['outputters'].last.delete(key)
@@ -75,31 +75,39 @@ class TestSqliteUnit < Test::Unit::TestCase
   def test_happy_hash
     logger = Log4r::Logger.new(@good_loggername)
 
-    hash = {
-      :type => 'SequelOutputter',
-      :name => 'sequel',
-      :formatter => Log4r::Formatter.new({
-        :type         => 'PatternFormatter',
-        :date_pattern => '%Y/%m/%d %H:%M.%s',
-        :pattern      => '%d!@#$%C!@#$%l!@#$%m',
-      }),
+    table = 'logs-%Y/%m/%d-%H:%M'
+    fmt_table = Time.now.strftime(table)
 
-      :engine => 'sqlite',
-      :file => 'log-%y-%m-%d-%H-%M.sqlite',
-      :table => 'logs_%y-%m-%d', # use the non-strftimed format here
-      :delimiter => '!@#$',
-      :map => {
-        0 => 'date',
-        1 => 'level',
-        2 => 'class',
-        3 => 'message',
-      },
+    hash = {
+        :type => 'SequelOutputter',
+        :name => 'sequel',
+        :formatter => Log4r::Formatter.new({
+           :type         => 'PatternFormatter',
+           :date_pattern => '%Y/%m/%d %H:%M.%s',
+           :pattern      => '%d!@#$%C!@#$%l!@#$%m',
+         }),
+
+        :engine => 'postgres',
+        :server => 'localhost',
+        :port   => 5432,
+        :database => 'logs',
+        :table    => table,
+        :username => 'postgres',
+        :password => 'postgres',
+
+        :delimiter => '!@#$',
+        :map => {
+            0 => 'date',
+            1 => 'level',
+            2 => 'class',
+            3 => 'message',
+        },
     }
 
     assert_nothing_raised do
       outputter = Log4r::Outputter::SequelOutputter.new(
-        'sequel',
-        hash,
+          'sequel',
+          hash,
       )
       logger.add(outputter)
     end
