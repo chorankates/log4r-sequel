@@ -6,15 +6,17 @@ Log4r outputter to a Sequel database handle
   - [from-source installation (latest)](#from-source-installation-latest)
   - [demo](#demo)
 - [supported databases](#supported-databases)
-- [TODO](#todo)
+- [notes](#notes)
 
-the de-facto standard library for logging in Ruby, [log4r](https://github.com/colbygk/log4r) works very well for a wide array of logging targets:
+the de-facto standard library for logging in Ruby, [log4r](https://github.com/colbygk/log4r), works very well for a wide array of logging targets:
   * STDOUT / STDERR
   * file
   * email
   * syslog
 
 and so on, but didn't have a way to output directly to a database - enter `log4r-sequel`
+
+this project was inspired/motivated by the fact that [chainsaw](http://log4r.rubyforge.org/manual.html#chainsaw) isn't supported on recent versions of OSX.
 
 ## usage
 
@@ -51,7 +53,7 @@ irb(main):001:0> require 'log4r/outputter/sequeloutputter'
 ### demo
 
 ```
-$ ruby example/log2postgres.rb
+$ ruby example/log2sqlite.rb
 2016/08/27 17:08.1472342938 | bar | DEBUG | this is a debug message
 2016/08/27 17:08.1472342938 | bar | INFO | this is an info message
 2016/08/27 17:08.1472342938 | bar | WARN | this is a warning
@@ -72,11 +74,6 @@ sqlite>
 ## supported databases
   * sqlite3
   * Postgres
-
-## TODO
-  * tests
-    * unit tests
-
 
 ## notes
   * `:database`, `:table`, and `:file` options are passed through `Time.now.strftime(%s)`
