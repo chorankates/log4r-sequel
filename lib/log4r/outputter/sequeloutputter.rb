@@ -3,18 +3,6 @@ require 'log4r/yamlconfigurator'
 require 'sequel'
 require 'yaml'
 
-class Log4r::Logger
-
-  # no parameters, returns the first Log4r::Outputter::Sequel object
-  def get_outputter
-    self.outputters.each do |op|
-      next unless op.is_a?(SequelOutputter)
-      return op
-    end
-  end
-
-end
-
 class SequelOutputter < Log4r::Outputter
 
   KNOWN_ENGINES = [
@@ -51,6 +39,8 @@ class SequelOutputter < Log4r::Outputter
 
     {
       :delimiter => @delimiter,
+      :engine    => @engine,
+      :formatter => config[:formatter], # feels a bit weird mixing instance variables and referencing the hash directly
       :map       => @map,
       :table     => @table,
     }.each_pair do |key, value|
@@ -108,6 +98,7 @@ class SequelOutputter < Log4r::Outputter
 
   def initialize_db
     map = @map # we're in a different class in the block below, can't access
+    # TODO would be better to check to see if the DB is good rather than just throw an exception here
     @dbh.create_table? @table do
       primary_key :id
       map.values.each do |v|
