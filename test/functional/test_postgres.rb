@@ -1,12 +1,12 @@
-$LOAD_PATH << sprintf('%s/../../lib', File.dirname(__FILE__))
-require 'log4r/outputter/sequeloutputter'
+$LOAD_PATH << sprintf('%s/../', File.dirname(__FILE__))
 
-require 'test/unit'
+require 'helper'
 
 class TestPostgres < Test::Unit::TestCase
 
   def setup
-    @good_config = sprintf('%s/../log4r-postgres_test.yaml', File.expand_path(File.dirname(__FILE__)))
+    # TODO move this to a helper class - or a function that returns one based on .. criteria
+    @good_config = sprintf('%s/../config/log4r-postgres.yaml', File.expand_path(File.dirname(__FILE__)))
     @table = Time.now.strftime('logs-%Y/%m/%d-%H:%M').to_sym
 
     begin
@@ -42,10 +42,6 @@ class TestPostgres < Test::Unit::TestCase
 
     assert_not_equal(0, logger.get_outputter.dbh[@table].count)
 
-  end
-
-  def test_sad_yaml
-    # TODO pass in bad configs as hashes
   end
 
   def test_happy_hash

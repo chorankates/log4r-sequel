@@ -1,12 +1,12 @@
-$LOAD_PATH << sprintf('%s/../../lib', File.dirname(__FILE__))
-require 'log4r/outputter/sequeloutputter'
+$LOAD_PATH << sprintf('%s/../', File.dirname(__FILE__))
 
-require 'test/unit'
+require 'helper'
+
 
 class TestSqlite < Test::Unit::TestCase
 
   def setup
-    @good_config = sprintf('%s/../log4r-sqlite_test.yaml', File.expand_path(File.dirname(__FILE__)))
+    @good_config = sprintf('%s/../config/log4r-sqlite.yaml', File.expand_path(File.dirname(__FILE__)))
     @table = :logs
 
     begin
@@ -19,7 +19,6 @@ class TestSqlite < Test::Unit::TestCase
   def teardown
     # TODO remove the database.. assume it's just '*.sqlite' in this path?
   end
-
 
   def test_happy_yaml
     file = @good_config
@@ -44,10 +43,6 @@ class TestSqlite < Test::Unit::TestCase
 
     assert_not_equal(0, logger.get_outputter.dbh[@table].count)
 
-  end
-
-  def test_sad_yaml
-    # TODO pass in bad configs as hashes
   end
 
   def test_happy_hash
