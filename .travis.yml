@@ -6,6 +6,10 @@ rvm:
   - 2.2.2
   - 2.3.0
 
+os:
+  - linux
+  - osx
+
 notifications:
   email: false
 
