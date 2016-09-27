@@ -7,9 +7,6 @@ gem 'log4r', '~> 1.1.9', '> 1.1'
 
 gem 'sequel', '~> 4.6', '>= 4.6.0'
 
-# making ruby 2.3.0 happy
-gem 'hoe', '~> 3.15', '>= 3.15.1'
-
 group :development do
   gem 'jeweler', '~> 2.0', '>= 2.0.0'
   gem 'test-unit', '~> 2.0', '>= 2.0.0'
@@ -18,6 +15,9 @@ group :development do
   # through it's own dependency, causing a hard requirement on ruby 2.3.x,
   # locking it down this way
   gem 'rack', '= 1.6.4'
+
+  # making ruby 2.3.0 happy
+  gem 'hoe', '~> 3.15', '>= 3.15.1'
 end
 
 group :sqlite do

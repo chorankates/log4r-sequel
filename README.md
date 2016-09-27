@@ -1,4 +1,7 @@
 # log4r-sequel
+
+[![build status](https://travis-ci.org/chorankates/log4r-sequel.svg)](https://travis-ci.org/chorankates/log4r-sequel) [![Gem Version](https://badge.fury.io/rb/bnchmrkr.svg)](https://rubygems.org/gems/log4r-sequel) [![Code Climate](https://codeclimate.com/github/chorankates/log4r-sequel/badges/gpa.svg)](https://codeclimate.com/github/chorankates/log4r-sequel)
+
 Log4r outputter to a Sequel database handle
 
 - [usage](#usage)
@@ -20,9 +23,7 @@ this project was inspired/motivated by the fact that [chainsaw](http://log4r.rub
 
 ## usage
 
-### pre-built gem installation (stable)
-
-[![Gem Version](https://badge.fury.io/rb/log4r-sequel.png)](https://rubygems.org/gems/log4r-sequel)
+### pre-built gem installation (stable) 
 
 ```sh
 gem install log4r-sequel
@@ -36,8 +37,6 @@ irb(main):002:0> logger = Log4r::Logger.new('foo')
 
 
 ### from-source installation (latest)
-
-[![build status](https://travis-ci.org/chorankates/log4r-sequel.svg)](https://travis-ci.org/chorankates/log4r-sequel)
 
 ```sh
 git clone https://github.com/chorankates/log4r-sequel.git
